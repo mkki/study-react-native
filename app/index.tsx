@@ -19,6 +19,14 @@ export default function App() {
     }
   };
 
+  const removeTask = (id: string) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
+
+  const editTask = (id: string, text: string) => {
+    setTasks(tasks.map((task) => (task.id === id ? { ...task, text } : task)));
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>To-Do List</Text>
@@ -28,12 +36,12 @@ export default function App() {
           style={styles.input}
           placeholder="할 일을 입력하세요"
           value={task}
-          onChangeText={setTask}
+          onChangeText={(task) => setTask(task)}
         />
         <Button title="추가" onPress={addTask} />
       </View>
 
-      <TaskList tasks={tasks} />
+      <TaskList tasks={tasks} removeTask={removeTask} editTask={editTask} />
     </View>
   );
 }

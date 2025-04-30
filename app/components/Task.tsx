@@ -1,21 +1,86 @@
 import { ITask } from '@/types/Task';
-import React from 'react';
-import { StyleSheet, Text } from 'react-native';
+import React, { useReducer, useState } from 'react';
+import {
+  Button,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
 
-interface TaskProps extends ITask {}
+interface TaskProps extends ITask {
+  removeTask: (id: string) => void;
+  editTask: (id: string, text: string) => void;
+}
 
-export default function Task({ text, isCompleted }: TaskProps) {
+export default function Task({
+  id,
+  text,
+  isCompleted,
+  removeTask,
+  editTask,
+}: TaskProps) {
+  const [isEditing, toggleIsEditing] = useReducer((state) => !state, false);
+  const [editedText, setEditedText] = useState(text);
+
+  const handleRemove = () => removeTask(id);
+  const handleEdit = () => toggleIsEditing();
+  const handleSave = () => {
+    editTask(id, editedText);
+    handleEdit();
+  };
+
   return (
-    <Text style={styles.task}>
-      {isCompleted ? '✅' : '⬜️'} {text}
-    </Text>
+    <View style={styles.taskContainer}>
+      {isEditing ? (
+        <>
+          <TextInput
+            style={styles.task}
+            value={editedText}
+            onChangeText={setEditedText}
+            autoFocus
+          />
+          <TouchableOpacity style={styles.taskButton}>
+            <Button onPress={handleSave} title="저장" />
+          </TouchableOpacity>
+        </>
+      ) : (
+        <>
+          <Text style={styles.task}>
+            {isCompleted ? '✅' : '⬜️'} {text}
+          </Text>
+          <TouchableOpacity style={styles.taskButton}>
+            <Button onPress={handleEdit} title="수정" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.taskButton}>
+            <Button onPress={handleRemove} title="삭제" />
+          </TouchableOpacity>
+        </>
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  taskContainer: {
+    flexDirection: 'row',
+  },
+  taskInput: {
+    flex: 1,
+  },
   task: {
+    flex: 1,
     fontSize: 16,
     paddingHorizontal: 4,
     paddingVertical: 8,
+  },
+  taskButton: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+    backgroundColor: '#fff',
+    fontSize: 14,
+    color: '#222',
   },
 });

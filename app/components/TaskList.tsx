@@ -4,10 +4,12 @@ import { ITask } from '@/types/Task';
 import Task from '@/components/Task';
 
 type TaskListProps = {
-  tasks?: ITask[];
+  tasks: ITask[] | [];
+  removeTask: (id: string) => void;
+  editTask: (id: string, text: string) => void;
 };
 
-export default function TaskList({ tasks }: TaskListProps) {
+export default function TaskList({ tasks, removeTask, editTask }: TaskListProps) {
   return (
     <FlatList
       data={tasks ?? []}
@@ -17,6 +19,8 @@ export default function TaskList({ tasks }: TaskListProps) {
           id={item.id}
           text={item.text}
           isCompleted={item.isCompleted}
+          removeTask={removeTask}
+          editTask={editTask}
         />
       )}
     />
