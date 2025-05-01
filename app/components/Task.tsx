@@ -8,11 +8,13 @@ import {
   View,
   TouchableOpacity,
   TextInput,
+  Pressable,
 } from 'react-native';
 
 interface TaskProps extends ITask {
   removeTask: (id: string) => void;
   editTask: (id: string, text: string) => void;
+  toggleCompleted: (id: string) => void;
 }
 
 export default function Task({
@@ -21,10 +23,12 @@ export default function Task({
   isCompleted,
   removeTask,
   editTask,
+  toggleCompleted,
 }: TaskProps) {
   const [isEditing, toggleIsEditing] = useToggle(false);
   const [editedText, setEditedText] = useState(text);
 
+  const handleCheck = () => toggleCompleted(id);
   const handleRemove = () => removeTask(id);
   const handleEditToggle = () => toggleIsEditing();
   const handleSave = () => {
@@ -37,7 +41,7 @@ export default function Task({
       {isEditing ? (
         <>
           <TextInput
-            style={styles.task}
+            style={styles.taskInput}
             value={editedText}
             onChangeText={setEditedText}
             autoFocus
@@ -51,9 +55,10 @@ export default function Task({
         </>
       ) : (
         <>
-          <Text style={styles.task}>
-            {isCompleted ? '✅' : '⬜️'} {text}
-          </Text>
+          <Pressable onPress={handleCheck}>
+            <Text>{isCompleted ? '✅' : '⬜️'}</Text>
+          </Pressable>
+          <Text style={styles.task}>{text}</Text>
           <TouchableOpacity style={styles.taskButton}>
             <Button onPress={handleEditToggle} title="수정" />
           </TouchableOpacity>
@@ -72,6 +77,12 @@ const styles = StyleSheet.create({
   },
   taskInput: {
     flex: 1,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    backgroundColor: '#fff',
+    marginRight: 8,
+    padding: 8,
+    borderRadius: 4,
   },
   task: {
     flex: 1,

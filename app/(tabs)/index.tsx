@@ -27,6 +27,14 @@ export default function TodoScreen() {
     setTasks(tasks.map((task) => (task.id === id ? { ...task, text } : task)));
   };
 
+  const toggleCompleted = (id: string) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, isCompleted: !task.isCompleted } : task
+      )
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>To-Do List</Text>
@@ -41,7 +49,7 @@ export default function TodoScreen() {
         <Button title="추가" onPress={addTask} />
       </View>
 
-      <TaskList tasks={tasks} removeTask={removeTask} editTask={editTask} />
+      <TaskList tasks={tasks} removeTask={removeTask} editTask={editTask} toggleCompleted={toggleCompleted} />
     </View>
   );
 }
@@ -58,6 +66,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderColor: '#ccc',
     borderWidth: 1,
+    backgroundColor: '#fff',
     marginRight: 8,
     padding: 8,
     borderRadius: 4,

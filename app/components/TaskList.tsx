@@ -7,9 +7,10 @@ type TaskListProps = {
   tasks: ITask[] | [];
   removeTask: (id: string) => void;
   editTask: (id: string, text: string) => void;
+  toggleCompleted: (id: string) => void;
 };
 
-export default function TaskList({ tasks, removeTask, editTask }: TaskListProps) {
+export default function TaskList({ tasks, removeTask, editTask, toggleCompleted }: TaskListProps) {
   return (
     <FlatList
       data={tasks ?? []}
@@ -21,6 +22,7 @@ export default function TaskList({ tasks, removeTask, editTask }: TaskListProps)
           isCompleted={item.isCompleted}
           removeTask={removeTask}
           editTask={editTask}
+          toggleCompleted={toggleCompleted}
         />
       )}
     />
