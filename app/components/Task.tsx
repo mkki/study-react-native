@@ -1,5 +1,6 @@
+import { useToggle } from '@/hooks/useToggle';
 import { ITask } from '@/types/Task';
-import React, { useReducer, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   StyleSheet,
@@ -21,14 +22,14 @@ export default function Task({
   removeTask,
   editTask,
 }: TaskProps) {
-  const [isEditing, toggleIsEditing] = useReducer((state) => !state, false);
+  const [isEditing, toggleIsEditing] = useToggle(false);
   const [editedText, setEditedText] = useState(text);
 
   const handleRemove = () => removeTask(id);
-  const handleEdit = () => toggleIsEditing();
+  const handleEditToggle = () => toggleIsEditing();
   const handleSave = () => {
     editTask(id, editedText);
-    handleEdit();
+    handleEditToggle();
   };
 
   return (
@@ -44,6 +45,9 @@ export default function Task({
           <TouchableOpacity style={styles.taskButton}>
             <Button onPress={handleSave} title="저장" />
           </TouchableOpacity>
+          <TouchableOpacity style={styles.taskButton}>
+            <Button onPress={handleEditToggle} title="취소" />
+          </TouchableOpacity>
         </>
       ) : (
         <>
@@ -51,7 +55,7 @@ export default function Task({
             {isCompleted ? '✅' : '⬜️'} {text}
           </Text>
           <TouchableOpacity style={styles.taskButton}>
-            <Button onPress={handleEdit} title="수정" />
+            <Button onPress={handleEditToggle} title="수정" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.taskButton}>
             <Button onPress={handleRemove} title="삭제" />
