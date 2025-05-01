@@ -2,19 +2,14 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import TaskList from '@/components/TaskList';
 import { ITask } from '@/types/Task';
+import UUID from 'react-native-uuid';
 
 export default function TodoScreen() {
   const [task, setTask] = useState<string>('');
   const [tasks, setTasks] = useState<ITask[]>([]);
-  const generateId = () =>
-    `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
-
   const addTask = (): void => {
     if (task.trim()) {
-      setTasks([
-        ...tasks,
-        { id: generateId(), text: task, isCompleted: false },
-      ]);
+      setTasks([...tasks, { id: UUID.v4(), text: task, isCompleted: false }]);
       setTask('');
     }
   };
@@ -49,7 +44,12 @@ export default function TodoScreen() {
         <Button title="추가" onPress={addTask} />
       </View>
 
-      <TaskList tasks={tasks} removeTask={removeTask} editTask={editTask} toggleCompleted={toggleCompleted} />
+      <TaskList
+        tasks={tasks}
+        removeTask={removeTask}
+        editTask={editTask}
+        toggleCompleted={toggleCompleted}
+      />
     </View>
   );
 }
