@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import TaskList from '@/components/TaskList';
 import { ITask } from '@/types/Task';
 
-export default function App() {
+export default function TodoScreen() {
   const [task, setTask] = useState<string>('');
   const [tasks, setTasks] = useState<ITask[]>([]);
   const generateId = () =>
