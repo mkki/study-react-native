@@ -1,29 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Image, View, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, Text } from 'react-native';
 import { listAllCuteCats, getCatImageById } from '@/api';
+import CatImageItem from './PhotoItem';
 
 export default function PhotoList() {
   const [images, setImages] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    listAllCuteCats().then((data) => {
-      const urls = data.map((id) => getCatImageById(id));
-      setImages(urls);
-    });
+    const fetchCats = async () => {
+      try {
+        const ids = await listAllCuteCats();
+        const urls = ids.map((id) => getCatImageById(id));
+        setImages(urls);
+      } catch (err) {
+        setError('이미지를 불러오지 못했습니다.');
+      }
+    };
+    fetchCats();
   }, []);
 
-  const renderItem = ({ item }: { item: string }) => {
-    return (
-      <View style={styles.imageContainer}>
-        <Image source={{ uri: item }} style={styles.image} />
-      </View>
-    );
-  };
+  if (error) return <Text style={styles.error}>{error}</Text>;
+
+  const renderItem = ({ item }: { item: string }) => (
+    <CatImageItem image={item} />
+  );
 
   return (
     <FlatList
       data={images}
-      keyExtractor={(item) => item}
+      keyExtractor={(image) => image}
       renderItem={renderItem}
       numColumns={2}
     />
@@ -31,13 +37,10 @@ export default function PhotoList() {
 }
 
 const styles = StyleSheet.create({
-  imageContainer: {
-    flex: 1,
-    margin: 8,
-  },
-  image: {
-    width: '100%',
-    height: 200,
-    borderRadius: 12,
+  error: {
+    marginTop: 30,
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
